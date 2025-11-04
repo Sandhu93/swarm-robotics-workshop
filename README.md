@@ -1,128 +1,142 @@
-# Swarm Robotics Workshop
+# Swarm Robotics Simulations
 
-A collection of swarm intelligence algorithms and simulations implemented in Python, demonstrating emergent behaviors and collective intelligence.
+This repository contains simple Python simulations that demonstrate swarm intelligence and emergent behavior. Each script is self-contained and can be run from the command line.
 
-## 🐜 Projects Included
+The main simulations are:
+- Ant Colony pathfinding (`01_ants.py`)
+- Bees task allocation and quorum (`02_bees.py`)
+- Boids flocking (`03_flocking.py`)
 
-### 1. Ant Colony Pathfinding (`01_ants.py`)
-- **Ant Colony Optimization (ACO)** for pathfinding
-- Ants find shortest paths from start to destination using **pheromone trails**
-- **Obstacle avoidance** with impassable barriers
-- **Swarm intelligence** - optimal paths emerge from simple local rules
-- Features: Dynamic barrier navigation, stuck-ant recovery, real-time visualization
+All instructions use plain, simple English and show both Windows PowerShell and macOS/Linux shell examples.
 
-### 2. Boids Flocking Simulation (`03_flocking.py`)
-- **Craig Reynolds' Boids algorithm** for realistic flocking behavior
-- **Three core rules**: Separation, Alignment, Cohesion
-- **Obstacle avoidance** with split-and-merge behavior
-- **Emergent patterns**: Flocking, swarming, streaming formations
-- Features: Multiple presets, configurable parameters, animation export
+**Requirements**
+- Python 3.9+ recommended
+- Packages: `numpy`, `matplotlib`
 
-## 🚀 Getting Started
+Install packages:
+- Windows PowerShell: `pip install numpy matplotlib`
+- macOS/Linux: `pip3 install numpy matplotlib`
 
-### Prerequisites
-```bash
-pip install numpy matplotlib
-```
+Optional for saving videos:
+- MP4 export needs `ffmpeg` installed on your system
+- GIF export works if Pillow is available (usually bundled with `matplotlib`)
 
-### Running the Simulations
+**Create a virtual environment (optional but recommended)**
+- Windows PowerShell
+  - `python -m venv .venv`
+  - `./.venv/Scripts/Activate.ps1`
+  - `pip install numpy matplotlib`
+- macOS/Linux
+  - `python3 -m venv .venv`
+  - `source .venv/bin/activate`
+  - `pip install numpy matplotlib`
 
-#### Ant Colony Pathfinding
-```bash
-python 01_ants.py
-```
-Watch ants discover and optimize paths around barriers using pheromone communication!
+**Quick Start**
+- Ants (default animation):
+  - Windows: `python 01_ants.py`
+  - macOS/Linux: `python3 01_ants.py`
+- Bees (default animation):
+  - Windows: `python 02_bees.py`
+  - macOS/Linux: `python3 02_bees.py`
+- Boids (split preset):
+  - Windows: `python 03_flocking.py --preset split --agents 120`
+  - macOS/Linux: `python3 03_flocking.py --preset split --agents 120`
 
-#### Boids Flocking
-```bash
-python 03_flocking.py --preset split --agents 120
-```
+**Running Headless (no display, e.g., servers/CI)**
+- Use the non-interactive backend and export to a file
+- Windows PowerShell
+  - `$env:MPLBACKEND = 'Agg'`
+  - `python 03_flocking.py --steps 500 --export flock.gif`
+- macOS/Linux
+  - `export MPLBACKEND=Agg`
+  - `python3 03_flocking.py --steps 500 --export flock.gif`
 
-**Available presets:**
-- `tight`: Dense flocking behavior
-- `loose`: Relaxed, spread-out movement
-- `split`: Demonstrates split-and-merge around obstacles
-- `center`: Single central obstacle
+**Saving Animations**
+- Save to GIF: add `--export output.gif`
+- Save to MP4: add `--export output.mp4` and ensure `ffmpeg` is installed
+- Control frame rate: `--fps 25`
 
-**Export animations:**
-```bash
-python 03_flocking.py --export flock_animation.gif --steps 500
-```
+Examples:
+- Ants to GIF: `python 01_ants.py --steps 400 --export ants.gif`
+- Bees to MP4: `python 02_bees.py --steps 600 --export bees.mp4 --fps 30`
+- Boids to GIF: `python 03_flocking.py --preset tight --export boids.gif`
 
-## 🧠 Key Concepts Demonstrated
+**Ant Colony Pathfinding (`01_ants.py`)**
+- Purpose: ants discover and reinforce a path from start to destination using pheromone trails and evaporation
+- Basic run: `python 01_ants.py`
+- Modes
+  - Animation: `--mode anim` (default)
+  - Benchmark: `--mode bench` (prints preset comparison, no window)
+- Useful arguments
+  - `--steps N` total frames to simulate
+  - `--bias F` exploit vs. explore (0–1)
+  - `--deposit F` pheromone deposited by successful ants
+  - `--evap F` evaporation rate per step
+  - `--diffuse F` trail diffusion weight
+  - `--step-size F` movement per frame
+  - `--radius N` arrival radius for start/destination
+  - `--export PATH` save animation to GIF/MP4
+  - `--fps N` frames per second for export
+- Examples
+  - Explore more: `python 01_ants.py --bias 0.8`
+  - Faster evaporation: `python 01_ants.py --evap 0.02`
+  - Headless export: `python 01_ants.py --steps 500 --export ants.gif`
 
-### Swarm Intelligence Principles
-- **Emergence**: Complex behaviors from simple rules
-- **Self-organization**: No central control needed
-- **Stigmergy**: Indirect coordination through environment modification (pheromones)
-- **Collective problem-solving**: Group intelligence exceeds individual capabilities
+**Bees: Task Allocation and Quorum (`02_bees.py`)**
+- Purpose: bees switch tasks (rest, forage, nurse) based on needs; some scouts discover sites; a quorum triggers a final choice
+- Basic run: `python 02_bees.py`
+- Useful arguments
+  - `--steps N` total frames to simulate
+  - `--ants N` number of bees
+  - `--quorum F` fraction needed to commit to a site
+  - `--export PATH` save animation to GIF/MP4
+  - `--fps N` frames per second for export
+- Examples
+  - More bees: `python 02_bees.py --ants 120`
+  - Stricter quorum: `python 02_bees.py --quorum 0.75`
+  - Save: `python 02_bees.py --steps 800 --export bees_quorum.gif`
 
-### Algorithms Implemented
-- **Ant Colony Optimization (ACO)**: Bio-inspired pathfinding and optimization
-- **Boids Algorithm**: Flocking and group movement simulation
-- **Obstacle avoidance**: Dynamic navigation around barriers
-- **Pheromone-based communication**: Chemical signaling simulation
+**Boids Flocking (`03_flocking.py`)**
+- Purpose: classic flocking with separation, alignment, and cohesion; includes simple obstacle avoidance
+- Basic run: `python 03_flocking.py`
+- Presets
+  - `tight` dense flocking
+  - `loose` spread out movement
+  - `split` split-and-merge around an obstacle (default)
+  - `center` single central obstacle
+- Useful arguments
+  - `--agents N` number of boids
+  - `--size H W` simulation height and width
+  - `--radius F` neighborhood radius
+  - `--sep-radius F` separation radius
+  - `--sep F`, `--align F`, `--coh F` behavior weights
+  - `--avoid F` obstacle avoidance weight
+  - `--max-speed F`, `--max-force F` limits
+  - `--wrap` or `--no-wrap` world boundaries
+  - `--steps N`, `--export PATH`, `--fps N`
+- Examples
+  - Default preset: `python 03_flocking.py --preset split --agents 120`
+  - No wrap, bounce at edges: `python 03_flocking.py --no-wrap`
+  - Larger field: `python 03_flocking.py --size 150 150 --agents 200`
 
-## 🎯 Applications
+**Troubleshooting**
+- No window appears
+  - Ensure a desktop session is available or use headless export with `MPLBACKEND=Agg` and `--export`
+- MP4 export fails
+  - Install `ffmpeg`, or export to GIF instead
+- Slow rendering
+  - Reduce `--agents`, lower `--steps`, or shrink `--size`
+- Import errors
+  - Activate your virtual environment and reinstall dependencies
 
-These algorithms have real-world applications in:
-- **Multi-robot coordination**
-- **Traffic flow optimization**
-- **Supply chain and logistics**
-- **Computer graphics and game AI**
-- **Distributed sensor networks**
-- **Crowd simulation and evacuation planning**
+**Repository Notes**
+- `ants.gif`, `bees_quorum.gif`, `flocking.gif` are example outputs
+- `bench_probe.py`, `bench_probe_nowalls.py` show how to step the ants simulation without a window
+  - Run: `python bench_probe.py` or `python bench_probe_nowalls.py`
 
-## 📊 Parameters and Customization
+**Background**
+- Ant Colony Optimization (Dorigo, Stützle)
+- Boids (Craig Reynolds, 1987)
+- Swarm intelligence and emergent behavior
 
-### Ant Colony (`01_ants.py`)
-- `N_ANTS`: Number of ants in the colony
-- `BIAS`: Probability of following pheromone trails vs exploration
-- `DEPOSIT`: Pheromone strength deposited by successful ants
-- `EVAP`: Pheromone evaporation rate
-- Barrier configuration through `walls` array
-
-### Boids (`03_flocking.py`)
-- `--agents`: Number of boids
-- `--radius`: Neighborhood detection radius
-- `--sep`, `--align`, `--coh`: Weights for the three core behaviors
-- `--max-speed`, `--max-force`: Movement constraints
-- `--wrap` / `--no-wrap`: Toroidal vs bounded environment
-
-## 🔬 Scientific Background
-
-This project demonstrates fundamental principles from:
-- **Swarm Intelligence** (Bonabeau, Dorigo, Theraulaz)
-- **Artificial Life** (Craig Reynolds' Boids, 1987)
-- **Bio-inspired Computing** (Ant Colony Optimization)
-- **Complex Adaptive Systems**
-- **Emergent Behavior in Multi-Agent Systems**
-
-## 🎨 Visualization Features
-
-- **Real-time animation** of agent behaviors
-- **Pheromone trail visualization** (ant simulation)
-- **Dynamic obstacle interaction**
-- **Parameter adjustment during runtime**
-- **Export capabilities** for creating presentations and demonstrations
-
-## 🤝 Contributing
-
-Feel free to experiment with:
-- New swarm algorithms (Particle Swarm Optimization, Fish Schooling, etc.)
-- Different obstacle configurations
-- Parameter optimization studies
-- 3D extensions of the algorithms
-- Performance benchmarking
-
-## 📚 References
-
-- Reynolds, C. W. (1987). "Flocks, herds and schools: A distributed behavioral model"
-- Dorigo, M. & Stützle, T. (2004). "Ant Colony Optimization"
-- Bonabeau, E., Dorigo, M., & Theraulaz, G. (1999). "Swarm Intelligence: From Natural to Artificial Systems"
-
----
-
-**Author**: Swarm Robotics Workshop  
-**Date**: November 2025  
-**License**: MIT
+License: MIT
